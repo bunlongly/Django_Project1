@@ -57,12 +57,17 @@ if DEBUG:
 
     MIDDLEWARE += ["debug_toolbar.middleware.DebugToolbarMiddleware"]
 
-    import socket
+import socket
 
+try:
     hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
+except socket.gaierror:
+    # Fallback to localhost if hostname resolution fails
+    hostname = "localhost"
+    ips = ["127.0.0.1"]
 
-    INTERNAL_IPS = [ip[:-1] + "1" for ip in ips] + ["127.0.0.1"]
-    INTERNAL_IPS += ["192.168.65.1"]
+INTERNAL_IPS = [ip[:-1] + "1" for ip in ips] + ["127.0.0.1"]
+INTERNAL_IPS += ["192.168.65.1"]
 
 
 ROOT_URLCONF = "djangoproject.urls"
