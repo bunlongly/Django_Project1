@@ -1,52 +1,57 @@
 {% extends "app/base.html" %} {% load humanize %} {% block content %}
-<main class="max-w-7xl mx-auto mt-10 p-2 md:p-4 lg:p-10">
-  <h1 class="title mb-4">Welcome</h1>
+<main class="max-w-7xl mx-auto mt-10 p-4 lg:p-10">
+  <!-- Welcome Section -->
+  <h1 class="text-4xl font-semibold text-gray-800 mb-6">
+    Welcome, {{ user.username }}!
+  </h1>
 
-  <p class="text-xl mb-4">
-    You have created {{ user.article_count|intcomma }} article
-    <!-- {{user.article_count|pluralize }} -->
-    and written {{ user.written_words|intcomma }} words
-    <!-- word{{user.written_words|pluralize }}.  -->
+  <p class="text-xl text-gray-600 mb-8">
+    You have created
+    <span class="font-semibold text-gray-800"
+      >{{ user.article_count|intcomma }}</span
+    >
+    article{{ user.article_count|pluralize }} and written
+    <span class="font-semibold text-gray-800"
+      >{{ user.written_words|intcomma }}</span
+    >
+    word{{ user.written_words|pluralize }}.
   </p>
 
   <a
-    class="button primary inline-block mb-6 w-full sm:w-auto text-center"
     href="{% url 'create_article' %}"
-    >Start new article</a
+    class="inline-block w-full sm:w-auto text-center py-3 px-6 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300"
   >
+    Start a New Article
+  </a>
 
-  <h2 class="subtitle mb-6">Your latest articles</h2>
-
-  <!-- <ul>
-  {% for article in articles %}
-  <li>
-    <a href="{% url 'update_article' article.id %}">{{ article.title }}</a> with
-    {{ article.word_count }} words.
-  </li>
-  {% endfor %}
-</ul> -->
+  <!-- Latest Articles Section -->
+  <h2 class="text-3xl font-semibold text-gray-800 mt-10 mb-6">
+    Your Latest Articles
+  </h2>
 
   {% if articles %}
-  <ul>
+  <ul class="space-y-6">
     {% for article in articles %}
-    <li>
+    <li class="bg-white shadow-md rounded-lg p-6 flex flex-col">
       <a
-        class="text-2xl flex items-center"
         href="{% url 'update_article' article.id %}"
+        class="text-2xl font-semibold text-gray-800 hover:text-blue-600 flex justify-between items-center mb-4"
       >
         {{ article.title }}
-        <span class="ml-2 px-4 py-0.5 text-xs rounded-sm uppercase bg-gray-200"
-          >{{ article.status }}</span
+        <span
+          class="ml-2 px-4 py-1 text-xs font-bold uppercase rounded-sm {% if article.status == 'draft' %} bg-gray-500 text-white {% elif article.status == 'inprogress' %} bg-yellow-500 text-white {% elif article.status == 'published' %} bg-green-500 text-white {% else %} bg-gray-300 text-black {% endif %}"
         >
+          {{ article.status }}
+        </span>
       </a>
-      <p class="text-sm">
-        {{ article.word_count }} word{{ article.word_count | pluralize }}
+      <p class="text-sm text-gray-500">
+        {{ article.word_count|intcomma }} word{{ article.word_count|pluralize }}
       </p>
     </li>
     {% endfor %}
   </ul>
   {% else %}
-  <p>You have no articles yet.</p>
+  <p class="text-gray-500">You have no articles yet. Start by creating one!</p>
   {% endif %}
 </main>
 {% endblock content %}
